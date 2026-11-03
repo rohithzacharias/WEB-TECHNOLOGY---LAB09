@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="techZoneApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechZone - Experiment 09</title>
+
+    <!-- AngularJS Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f0ea;
+            color: #222;
+        }
+
+        header {
+            background: #202020;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #ff5b2e;
+            margin: 5px;
+        }
+
+        nav {
+            background: #333;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #ff5b2e;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #ff5b2e;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            margin: 7px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        button {
+            background: #202020;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover:not(:disabled) {
+            background: #ff5b2e;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .radio-group label {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .radio-group input {
+            width: auto;
+        }
+
+        .product {
+            background: #f3f0ea;
+            padding: 18px;
+            margin: 12px 0;
+            border-radius: 6px;
+        }
+
+        footer {
+            background: #202020;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        @media(max-width: 600px) {
+            .container {
+                margin: 15px;
+                padding: 20px;
+            }
+
+            nav a {
+                display: inline-block;
+                margin: 7px;
+            }
+        }
+    </style>
+</head>
+
+<body ng-controller="MainController">
+
+    <!-- Header -->
+    <header>
+        <h1>TECHZONE</h1>
+        <p>Electronics Store</p>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#!/">Home</a>
+        <a href="#!/products">Products</a>
+        <a href="#!/register">Register</a>
+        <a href="#!/contact">Contact</a>
+    </nav>
+
+    <!-- Dynamic Page Content -->
+    <div ng-view></div>
+
+    <!-- Footer -->
+    <footer>
+        <p>TechZone Electronics Store</p>
+        <p>Experiment 09 - AngularJS Form Validation and Routing</p>
+    </footer>
+
+
+    <!-- HOME PAGE -->
+    <script type="text/ng-template" id="home.html">
+        <div class="container">
+            <h2>Welcome to TechZone!</h2>
+
+            <p>
+                Discover the latest electronics and accessories
+                at TechZone.
+            </p>
+
+            <div class="product">
+                <h3>Latest Electronics</h3>
+                <p>Explore headphones, smart watches,
+                speakers and keyboards.</p>
+                <a href="#!/products">
+                    <button>Explore Products</button>
+                </a>
+            </div>
+
+            <div class="product">
+                <h3>Become a Member</h3>
+                <p>Register with TechZone to get started.</p>
+                <a href="#!/register">
+                    <button>Register Now</button>
+                </a>
+            </div>
+        </div>
+    </script>
+
+
+    <!-- PRODUCTS PAGE -->
+    <script type="text/ng-template" id="products.html">
+        <div class="container">
+            <h2>Our Products</h2>
+
+            <div class="product">
+                <h3>Wireless Headphones</h3>
+                <p>Price: ₹8,499</p>
+            </div>
+
+            <div class="product">
+                <h3>Smart Watch</h3>
+                <p>Price: ₹5,999</p>
+            </div>
+
+            <div class="product">
+                <h3>Mini Speaker</h3>
+                <p>Price: ₹3,299</p>
+            </div>
+
+            <div class="product">
+                <h3>Mechanical Keyboard</h3>
+                <p>Price: ₹6,499</p>
+            </div>
+        </div>
+    </script>
+
+
+    <!-- REGISTRATION PAGE -->
+    <script type="text/ng-template" id="register.html">
+        <div class="container" ng-controller="RegisterController">
+
+            <h2>Customer Registration Form</h2>
+
+            <form name="regForm"
+                  ng-submit="submitForm()"
+                  novalidate>
+
+                <!-- Name -->
+                <label>Name *</label>
+                <input type="text"
+                       name="name"
+                       ng-model="user.name"
+                       ng-pattern="/^[a-zA-Z ]+$/"
+                       required
+                       placeholder="Enter your name">
+
+                <div class="error"
+                     ng-show="regForm.name.$touched && regForm.name.$invalid">
+                    Enter a valid name without numbers.
+                </div>
+
+
+                <!-- Password -->
+                <label>Password *</label>
+                <input type="password"
+                       name="password"
+                       ng-model="user.password"
+                       ng-pattern="/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/"
+                       required
+                       placeholder="Enter password">
+
+                <div class="error"
+                     ng-show="regForm.password.$touched && regForm.password.$invalid">
+                    Password must contain at least 8 characters,
+                    one uppercase letter, one lowercase letter
+                    and one number.
+                </div>
+
+
+                <!-- Age -->
+                <label>Age *</label>
+                <input type="number"
+                       name="age"
+                       ng-model="user.age"
+                       min="18"
+                       max="30"
+                       required
+                       placeholder="Enter your age">
+
+                <div class="error"
+                     ng-show="regForm.age.$touched && regForm.age.$invalid">
+                    Age must be between 18 and 30.
+                </div>
+
+
+                <!-- Mobile -->
+                <label>Mobile Number *</label>
+                <input type="text"
+                       name="mobile"
+                       ng-model="user.mobile"
+                       ng-pattern="/^[0-9]{10}$/"
+                       required
+                       placeholder="Enter 10 digit mobile number">
+
+                <div class="error"
+                     ng-show="regForm.mobile.$touched && regForm.mobile.$invalid">
+                    Mobile number must contain exactly 10 digits.
+                </div>
+
+
+                <!-- Email -->
+                <label>Email *</label>
+                <input type="email"
+                       name="email"
+                       ng-model="user.email"
+                       required
+                       placeholder="Enter email address">
+
+                <div class="error"
+                     ng-show="regForm.email.$touched && regForm.email.$invalid">
+                    Enter a valid email address.
+                </div>
+
+
+                <!-- Gender -->
+                <label>Gender *</label>
+
+                <div class="radio-group">
+                    <label>
+                        <input type="radio"
+                               name="gender"
+                               value="Male"
+                               ng-model="user.gender"
+                               required>
+                        Male
+                    </label>
+
+                    <label>
+                        <input type="radio"
+                               name="gender"
+                               value="Female"
+                               ng-model="user.gender"
+                               required>
+                        Female
+                    </label>
+                </div>
+
+                <div class="error"
+                     ng-show="regForm.gender.$touched && regForm.gender.$invalid">
+                    Please select your gender.
+                </div>
+
+
+                <!-- State -->
+                <label>State *</label>
+
+                <select name="state"
+                        ng-model="user.state"
+                        required>
+
+                    <option value="">Select State</option>
+                    <option>Tamil Nadu</option>
+                    <option>Kerala</option>
+                    <option>Karnataka</option>
+                    <option>Andhra Pradesh</option>
+                    <option>Telangana</option>
+                </select>
+
+                <div class="error"
+                     ng-show="regForm.state.$touched && regForm.state.$invalid">
+                    Please select your state.
+                </div>
+
+
+                <!-- Submit -->
+                <button type="submit"
+                        ng-disabled="regForm.$invalid">
+                    Submit Registration
+                </button>
+
+                <p class="success" ng-if="submitted">
+                    Registration completed successfully!
+                </p>
+
+            </form>
+        </div>
+    </script>
+
+
+    <!-- CONTACT PAGE -->
+    <script type="text/ng-template" id="contact.html">
+        <div class="container">
+            <h2>Contact TechZone</h2>
+
+            <p>Have questions about our products?</p>
+
+            <div class="product">
+                <h3>Customer Support</h3>
+                <p>Email: support@techzone.com</p>
+                <p>Phone: 9876543210</p>
+                <p>Location: Coimbatore, Tamil Nadu</p>
+            </div>
+        </div>
+    </script>
+
+    <!-- ANGULARJS APPLICATION -->
+    <script>
+
+        var app = angular.module("techZoneApp", ["ngRoute"]);
+
+        // Routing Configuration
+        app.config(function($routeProvider, $locationProvider) {
+
+            $locationProvider.hashPrefix("!");
+
+            $routeProvider
+
+                .when("/", {
+                    templateUrl: "home.html"
+                })
+
+                .when("/products", {
+                    templateUrl: "products.html"
+                })
+
+                .when("/register", {
+                    templateUrl: "register.html"
+                })
+
+                .when("/contact", {
+                    templateUrl: "contact.html"
+                })
+
+                .otherwise({
+                    redirectTo: "/"
+                });
+        });
+
+        // Main Controller
+        app.controller("MainController", function($scope) {
+            $scope.title = "TechZone Electronics Store";
+        });
+
+        // Registration Controller
+        app.controller("RegisterController", function($scope) {
+
+            $scope.user = {};
+            $scope.submitted = false;
+
+            $scope.submitForm = function() {
+
+                if ($scope.regForm.$valid) {
+                    $scope.submitted = true;
+                }
+
+            };
+
+        });
+
+    </script>
+
+</body>
+</html>
